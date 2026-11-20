@@ -1,0 +1,6 @@
+{
+  "name": "Taounate Booth",
+  "description": "Taounate Photo Booth for the 12th Educational & Career Orientation Forum in Taounate — capture souvenir photos with the official Moroccan cultural frame and email them securely.",
+  "requestFramePermissions": ["CAMERA"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,52 @@
+<resources>
+    <string name="app_name">Taounate Booth</string>
+    <string name="brand_header">TAOUNATE PHOTO BOOTH</string>
+    <string name="event_title">ملتقى التوجيه المدرسي والمهني</string>
+    <string name="event_edition">الدورة الثانية عشرة – تاونات</string>
+    <string name="main_headline">خلّد مشاركتك في ملتقى التوجيه 12 بتاونات</string>
+    <string name="welcome_phrase">لحظتك في الملتقى… ذكرى تبقى.</string>
+    <string name="cta_start">ابدأ تجربتك والتقط صورتك</string>
+    <string name="footer_caption">التقط صورتك، واحتفظ بذكرى مشاركتك، واستقبلها عبر بريدك الإلكتروني</string>
+
+    <string name="camera_permission_title">إذن استخدام الكاميرا</string>
+    <string name="camera_permission_rationale">يحتاج ركن التصوير إلى إذن الكاميرا فقط لالتقاط صورتك التذكارية داخل فضاء الملتقى.</string>
+    <string name="camera_permission_grant">السماح بالكاميرا</string>
+    <string name="camera_permission_settings">فتح إعدادات التطبيق</string>
+    <string name="camera_capture">التقاط الصورة</string>
+    <string name="camera_switch">تبديل الكاميرا</string>
+    <string name="camera_timer_3s">مؤقت 3 ثوانٍ</string>
+    <string name="camera_timer_off">التقاط فوري</string>
+    <string name="camera_frame_on">إخفاء الإطار</string>
+    <string name="camera_frame_off">إظهار الإطار</string>
+    <string name="camera_processing">جارٍ دمج صورتك مع الإطار الرسمي…</string>
+
+    <string name="preview_title">معاينة صورتك التذكارية</string>
+    <string name="preview_retake">إعادة التصوير</string>
+    <string name="preview_approve">اعتماد الصورة وإرسالها</string>
+
+    <string name="email_title">صورتك التذكارية جاهزة!</string>
+    <string name="email_subtitle">أدخل بريدك الإلكتروني لتصلك صورتك التذكارية من ملتقى التوجيه 12 بتاونات</string>
+    <string name="email_hint">example@email.com</string>
+    <string name="email_label">البريد الإلكتروني</string>
+    <string name="email_invalid_error">يرجى إدخال بريد إلكتروني صحيح.</string>
+    <string name="email_send_button">أرسل صورتي</string>
+    <string name="email_sending">جارٍ إرسال صورتك عبر الخادم الآمن…</string>
+    <string name="email_back_preview">العودة إلى معاينة الصورة</string>
+    <string name="email_privacy_notice">حماية الخصوصية (قانون 09-08): يُستعمل بريدك الإلكتروني حصرياً لإرسال هذه الصورة التذكارية، ولا يُخزّن أو يُستعمل لأي غرض إعلاني.</string>
+    <string name="email_offline_error">تعذر الاتصال بالإنترنت حالياً. يرجى التأكد من الشبكة والمحاولة مجدداً؛ صورتك ما زالت محفوظة لهذه الجلسة.</string>
+    <string name="email_backend_not_configured">لم يتم ضبط رابط خادم الإرسال بعد. يُرجى من المنظم إعداد رابط الخادم الآمن من لوحة المنظم.</string>
+    <string name="email_share_fallback">مشاركة مؤقتة عبر الجهاز</string>
+
+    <string name="success_title">تم إرسال صورتك بنجاح!</string>
+    <string name="success_subtitle">ستجد صورتك التذكارية في بريدك الإلكتروني. شكراً لمشاركتك في ملتقى التوجيه 12 بتاونات</string>
+    <string name="success_new_photo">التقاط صورة جديدة</string>
+
+    <string name="organizer_title">لوحة إعدادات المنظم</string>
+    <string name="organizer_pin_title">منطقة محمية للمنظمين</string>
+    <string name="organizer_pin_prompt">أدخل رمز الدخول الخاص بمنظمي الملتقى</string>
+    <string name="organizer_pin_wrong">رمز الدخول غير صحيح.</string>
+    <string name="organizer_unlock">دخول</string>
+    <string name="cancel">إلغاء</string>
+    <string name="back">رجوع</string>
+    <string name="retry">إعادة المحاولة</string>
+</resources>

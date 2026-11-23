@@ -169,6 +169,42 @@ class PhotoBoothTests {
     }
 
     @Test
+    fun `welcome screen designer button opens official frame showcase modal`() {
+        composeTestRule.setContent {
+            TaounatePhotoBoothTheme {
+                WelcomeScreen(
+                    config = BoothConfig(),
+                    onStartPhotoExperience = {},
+                    onVerifyOrganizerPin = { true },
+                    onOpenOrganizerSettings = {}
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("preview_official_frame_button").performScrollTo().performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("معاينة الإطار التذكاري الرسمي").assertExists()
+    }
+
+    @Test
+    fun `welcome screen a propos button shows Tarik Erraji designer dialog`() {
+        composeTestRule.setContent {
+            TaounatePhotoBoothTheme {
+                WelcomeScreen(
+                    config = BoothConfig(),
+                    onStartPhotoExperience = {},
+                    onVerifyOrganizerPin = { true },
+                    onOpenOrganizerSettings = {}
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("about_button").performScrollTo().performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("طارق الراجي").assertExists()
+    }
+
+    @Test
     fun `main activity launches without ClassNotFoundException`() {
         val controller = org.robolectric.Robolectric.buildActivity(MainActivity::class.java).setup()
         assertNotNull(controller.get())

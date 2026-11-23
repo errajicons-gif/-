@@ -33,14 +33,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.CameraAlt
+import androidx.compose.material.icons.rounded.FilterFrames
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.MailOutline
 import androidx.compose.material.icons.rounded.PhotoCamera
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -59,7 +64,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -70,13 +77,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.aspectRatio
 import com.example.R
 import com.example.data.BoothConfig
+import com.example.photo.PhotoFrameCompositor
 import com.example.ui.components.EventLogoBadge
 import com.example.ui.components.GoldDividerOrnament
 import com.example.ui.components.GoldFestivalButton
 import com.example.ui.components.MoroccanFestivalBackground
 import com.example.ui.theme.GoldBright
+import com.example.ui.theme.GoldDeep
 import com.example.ui.theme.GoldPrimary
 import com.example.ui.theme.IvoryWhite
 import com.example.ui.theme.RoyalBlueDeep
@@ -94,6 +104,8 @@ fun WelcomeScreen(
     onOpenOrganizerSettings: () -> Unit
 ) {
     var showPinDialog by remember { mutableStateOf(false) }
+    var showFrameShowcase by remember { mutableStateOf(false) }
+    var showAboutDialog by remember { mutableStateOf(false) }
     var secretTapCount by remember { mutableIntStateOf(0) }
 
     val pulseTransition = rememberInfiniteTransition(label = "cta_pulse")
@@ -144,6 +156,8 @@ fun WelcomeScreen(
                         config = config,
                         pulseScale = pulseScale,
                         onStartPhotoExperience = onStartPhotoExperience,
+                        onPreviewOfficialFrame = { showFrameShowcase = true },
+                        onOpenAbout = { showAboutDialog = true },
                         modifier = Modifier
                             .weight(1.05f)
                             .verticalScroll(rememberScrollState())
@@ -176,6 +190,8 @@ fun WelcomeScreen(
                         config = config,
                         pulseScale = pulseScale,
                         onStartPhotoExperience = onStartPhotoExperience,
+                        onPreviewOfficialFrame = { showFrameShowcase = true },
+                        onOpenAbout = { showAboutDialog = true },
                         modifier = Modifier.widthIn(max = 560.dp)
                     )
 
@@ -183,6 +199,24 @@ fun WelcomeScreen(
                 }
             }
         }
+    }
+
+    if (showFrameShowcase) {
+        OfficialFrameShowcaseDialog(
+            config = config,
+            onDismiss = { showFrameShowcase = false },
+            onStartPhotoExperience = {
+                showFrameShowcase = false
+                onStartPhotoExperience()
+            }
+        )
+    }
+
+    if (showAboutDialog) {
+        AboutDesignerDialog(
+            config = config,
+            onDismiss = { showAboutDialog = false }
+        )
     }
 
     if (showPinDialog) {
@@ -383,6 +417,8 @@ private fun WelcomeActionPanel(
     config: BoothConfig,
     pulseScale: Float,
     onStartPhotoExperience: () -> Unit,
+    onPreviewOfficialFrame: () -> Unit,
+    onOpenAbout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -467,6 +503,39 @@ private fun WelcomeActionPanel(
                 }
             )
 
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Custom-designed Moroccan Royal Blue & Brushed Gold secondary button
+            OutlinedButton(
+                onClick = onPreviewOfficialFrame,
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(
+                    width = 1.5.dp,
+                    brush = Brush.horizontalGradient(listOf(GoldDeep, GoldBright, GoldDeep))
+                ),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = RoyalBlueMid.copy(alpha = 0.72f),
+                    contentColor = GoldBright
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+                    .testTag("preview_official_frame_button")
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.FilterFrames,
+                    contentDescription = null,
+                    tint = GoldBright,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = "استعراض الإطار الرسمي للملتقى",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = IvoryWhite
+                )
+            }
+
             Spacer(modifier = Modifier.height(18.dp))
 
             Text(
@@ -475,6 +544,28 @@ private fun WelcomeActionPanel(
                 color = SoftSlateText,
                 textAlign = TextAlign.Center
             )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            TextButton(
+                onClick = onOpenAbout,
+                modifier = Modifier
+                    .height(48.dp)
+                    .testTag("about_button")
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Info,
+                    contentDescription = null,
+                    tint = GoldBright,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "À propos • حول التطبيق",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = GoldBright
+                )
+            }
         }
     }
 }
@@ -599,6 +690,195 @@ private fun OrganizerPinDialog(
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.cancel), color = SoftSlateText)
+            }
+        }
+    )
+}
+
+@Composable
+private fun OfficialFrameShowcaseDialog(
+    config: BoothConfig,
+    onDismiss: () -> Unit,
+    onStartPhotoExperience: () -> Unit
+) {
+    val context = LocalContext.current
+    var showPortrait by remember { mutableStateOf(true) }
+    val frameBitmap = remember(config, showPortrait) {
+        PhotoFrameCompositor.loadActiveFrameBitmap(context, config, isPortrait = showPortrait)
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = RoyalBlueSurface,
+        title = {
+            Text(
+                text = "معاينة الإطار التذكاري الرسمي",
+                style = MaterialTheme.typography.titleLarge,
+                color = GoldBright,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        text = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    modifier = Modifier.padding(bottom = 12.dp)
+                ) {
+                    FilterChip(
+                        selected = showPortrait,
+                        onClick = { showPortrait = true },
+                        label = { Text("عمودي") },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = GoldPrimary,
+                            selectedLabelColor = RoyalBlueDeep
+                        )
+                    )
+                    FilterChip(
+                        selected = !showPortrait,
+                        onClick = { showPortrait = false },
+                        label = { Text("أفقي") },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = GoldPrimary,
+                            selectedLabelColor = RoyalBlueDeep
+                        )
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(if (showPortrait) 3f / 4f else 4f / 3f)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(RoyalBlueDeep),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.img_hero_backdrop),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    if (frameBitmap != null) {
+                        Image(
+                            bitmap = frameBitmap.asImageBitmap(),
+                            contentDescription = "معاينة إطار الملتقى الرسمي",
+                            contentScale = ContentScale.FillBounds,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onStartPhotoExperience,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = GoldPrimary,
+                    contentColor = RoyalBlueDeep
+                )
+            ) {
+                Text("التقط صورتك الآن", fontWeight = FontWeight.Bold)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("إغلاق", color = SoftSlateText)
+            }
+        }
+    )
+}
+
+@Composable
+private fun AboutDesignerDialog(
+    config: BoothConfig,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = RoyalBlueSurface,
+        icon = {
+            EventLogoBadge(customLogoPath = config.customLogoPath, size = 64.dp)
+        },
+        title = {
+            Text(
+                text = "À propos • حول التطبيق",
+                style = MaterialTheme.typography.titleLarge,
+                color = GoldBright,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        text = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = config.brandHeader,
+                    style = MaterialTheme.typography.labelLarge.copy(letterSpacing = 1.4.sp),
+                    color = GoldBright,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "${config.eventTitle}\n${config.editionLabel}",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = IvoryWhite,
+                    textAlign = TextAlign.Center
+                )
+
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = RoyalBlueMid,
+                    border = BorderStroke(1.5.dp, GoldPrimary),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)
+                    ) {
+                        Text(
+                            text = "تصميم وإعداد",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = GoldBright
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "طارق الراجي",
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = IvoryWhite,
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "Tarik Erraji",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = SoftSlateText,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                Text(
+                    text = "تطبيق ركن التصوير التذكاري الرسمي لملتقى التوجيه المدرسي والمهني بتاونات، مصمم مع احترام حماية المعطيات الشخصية (القانون 09-08).",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = SoftSlateText,
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = GoldPrimary,
+                    contentColor = RoyalBlueDeep
+                )
+            ) {
+                Text("إغلاق", fontWeight = FontWeight.Bold)
             }
         }
     )
